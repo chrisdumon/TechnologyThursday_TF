@@ -44,33 +44,11 @@ module "web_server_sg-http" {
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
 }
-
-module "web_server_sg-ssh" {
-  source = "terraform-aws-modules/security-group/aws//modules/ssh"
-
-  name        = "web-server-ssh"
-  description = "Security group for web-server with SSH ports open within VPC"
-  vpc_id      = module.my-vpc.vpc_id
-
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-}
-
-module "web_server_sg-https" {
-  source = "terraform-aws-modules/security-group/aws//modules/https-443"
-
-  name        = "web-server-https"
-  description = "Security group for web-server with HTTPS ports open within VPC"
-  vpc_id      = module.my-vpc.vpc_id
-
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-}
-
 resource "aws_instance" "webapp" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
-  vpc_security_group_ids = [module.web_server_sg-http.security_group_id, module.web_server_sg-ssh.security_group_id, module.web_server_sg-https.security_group_id]
+  vpc_security_group_ids = [module.web_server_sg-http.security_group_id]
   subnet_id = module.my-vpc.public_subnets[0]
-  key_name = var.ssh_key_name
   user_data = data.template_file.user_data.rendered
 }
 
