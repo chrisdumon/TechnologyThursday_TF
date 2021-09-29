@@ -12,4 +12,3 @@ variable "ssh_key_name" {
   description = "The name of the AWS key pair used to connect via SSH to Amazon Web Services"
   type        = string
 }
-
